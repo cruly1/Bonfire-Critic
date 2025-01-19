@@ -1,0 +1,13 @@
+package hu.unideb.inf.thesis.bonfirecritic;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class FragscoreApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(FragscoreApplication.class, args);
+	}
+
+}
