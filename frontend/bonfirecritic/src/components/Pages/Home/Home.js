@@ -27,9 +27,7 @@ const Home = () => {
                     <div className="category-card" onClick={() => navigate('/games?filter=community-favorites')}>Community Favorites</div>
                 </div>
             </section>
-            <footer className="home-footer">
-                <p>&copy; 2025 Bonfire Critic | Let your gaming voice be heard.</p>
-            </footer>
+            
         </div>
     );
 };

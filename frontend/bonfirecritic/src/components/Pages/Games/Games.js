@@ -36,7 +36,7 @@ const Games = () => {
                             checked={filterFavorites}
                             onChange={() => setFilterFavorites(!filterFavorites)}
                         />
-                        Show Only Favorites (> 100)
+                        'Show Only Favorites (  100)
                     </label>
 
                     <select
