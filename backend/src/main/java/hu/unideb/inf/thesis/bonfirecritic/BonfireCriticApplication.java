@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class FragscoreApplication {
+public class BonfireCriticApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(FragscoreApplication.class, args);
+		SpringApplication.run(BonfireCriticApplication.class, args);
 	}
 
 }
