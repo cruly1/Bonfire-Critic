@@ -19,14 +19,6 @@ const Navbar = () => {
             <div className="navbar-logo" onClick={() => navigate('/')}>
                 Bonfire Critic
             </div>
-            <div className="navbar-links">
-                <button className="navbar-button" onClick={() => navigate('/games')}>
-                    Game Collection
-                </button>
-                <button className="navbar-button" onClick={() => navigate('/login')}>
-                    Sign In / Sign Up
-                </button>
-            </div>
             <form className="navbar-search" onSubmit={handleSearch}>
                 <input
                     type="text"
@@ -38,6 +30,14 @@ const Navbar = () => {
                     🔍
                 </button>
             </form>
+            <div className="navbar-links">
+                <button className="navbar-button" onClick={() => navigate('/games')}>
+                    Game Collection
+                </button>
+                <button className="navbar-button" onClick={() => navigate('/login')}>
+                    Sign In / Sign Up
+                </button>
+            </div>
         </nav>
     );
 };
