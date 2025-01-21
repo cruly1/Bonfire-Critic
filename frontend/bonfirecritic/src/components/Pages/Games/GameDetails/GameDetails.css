@@ -1,0 +1,63 @@
+/* GameDetails.css */
+
+.game-details-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #2b2b2b;
+    color: #f5f5f5;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    min-height: 100vh;
+}
+
+.game-title {
+    font-size: 2.5rem;
+    color: #ff914d;
+    margin-bottom: 10px;
+}
+
+.game-description {
+    font-size: 1.2rem;
+    color: #cccccc;
+    margin-bottom: 20px;
+}
+
+.game-info p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+    color: #f5f5f5;
+}
+
+.game-actions {
+    margin-top: 20px;
+}
+
+.game-actions button {
+    margin: 0 10px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.favorite-button {
+    background-color: #ff914d;
+    color: #1a1a1a;
+}
+
+.favorite-button:hover {
+    background-color: #ffaa6c;
+}
+
+.rate-button {
+    background-color: #444444;
+    color: #f5f5f5;
+}
+
+.rate-button:hover {
+    background-color: #555555;
+}

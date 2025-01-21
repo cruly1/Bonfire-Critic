@@ -1,5 +1,5 @@
-// Games.js
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Games.css';
 
 const gamesData = [
@@ -13,11 +13,14 @@ const gamesData = [
 const Games = () => {
     const [filterFavorites, setFilterFavorites] = useState(false);
     const [sortCriteria, setSortCriteria] = useState('rating');
+    const navigate = useNavigate();
 
+    // Filter games by favorites if the checkbox is checked
     const filteredGames = filterFavorites
         ? gamesData.filter((game) => game.favorites > 100)
         : gamesData;
 
+    // Sort games based on the selected criteria
     const sortedGames = [...filteredGames].sort((a, b) => {
         if (sortCriteria === 'rating') return b.rating - a.rating;
         if (sortCriteria === 'favorites') return b.favorites - a.favorites;
@@ -25,10 +28,14 @@ const Games = () => {
         return 0;
     });
 
+    const handleGameClick = (gameId) => {
+        navigate(`/games/${gameId}`);
+    };
+
     return (
         <div className="games-container">
             <header className="games-header">
-                <h1>Game List</h1>
+                <h1>Game Collection</h1>
                 <div className="filters">
                     <label>
                         <input
@@ -36,9 +43,8 @@ const Games = () => {
                             checked={filterFavorites}
                             onChange={() => setFilterFavorites(!filterFavorites)}
                         />
-                        'Show Only Favorites (  100)
+                        
                     </label>
-
                     <select
                         value={sortCriteria}
                         onChange={(e) => setSortCriteria(e.target.value)}
@@ -50,10 +56,13 @@ const Games = () => {
                     </select>
                 </div>
             </header>
-
             <ul className="games-list">
                 {sortedGames.map((game) => (
-                    <li key={game.id} className="game-item">
+                    <li
+                        key={game.id}
+                        className="game-item"
+                        onClick={() => handleGameClick(game.id)}
+                    >
                         <h2>{game.title}</h2>
                         <p>Rating: {game.rating}</p>
                         <p>Favorites: {game.favorites}</p>

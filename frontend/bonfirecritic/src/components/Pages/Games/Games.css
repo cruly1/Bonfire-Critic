@@ -13,6 +13,7 @@ body {
     margin: 0 auto;
     padding: 20px;
     text-align: center;
+    min-height: 100vh;
 }
 
 .games-header {
@@ -45,6 +46,8 @@ body {
     padding: 0;
 }
 
+/* Games.css */
+
 .game-item {
     background-color: #2b2b2b;
     margin: 10px 0;
@@ -52,7 +55,15 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: left;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
 }
+
+.game-item:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
 
 .game-item h2 {
     margin: 0 0 10px;
@@ -66,7 +77,4 @@ body {
     color: #cccccc;
 }
 
-.game-item:hover {
-    background-color: #333;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-}
+
