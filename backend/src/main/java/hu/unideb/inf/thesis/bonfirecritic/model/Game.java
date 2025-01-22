@@ -53,7 +53,8 @@ public class Game {
     @JoinTable(
             name = "game_actors",
             joinColumns = @JoinColumn(name = "game_id"),
-            inverseJoinColumns = @JoinColumn(name = "actor_id")
+            inverseJoinColumns = @JoinColumn(name = "actor_id"
+            )
     )
     private Set<Actor> actors = new HashSet<>();
 }

@@ -19,6 +19,6 @@ public class RAM {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "size_in_gb")
     private int sizeInGB;
 }

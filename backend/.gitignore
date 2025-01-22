@@ -35,4 +35,3 @@ build/
 ### DB ###
 DB.mv.db
 DB.trace.db
-/db scripts/
