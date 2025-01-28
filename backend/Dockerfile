@@ -1,5 +1,5 @@
 # Build stage
-FROM maven:3.8.4-openjdk-17 AS build
+FROM maven:3.8.1-openjdk-17 AS build
 
 WORKDIR /project
 
@@ -7,7 +7,7 @@ COPY pom.xml .
 
 COPY src/ /project/src
 
-RUN mvn clean install -DskipTests=false
+RUN mvn clean install #-DskipTests=false
 
 # Run stage
 FROM eclipse-temurin:17-jre-alpine
@@ -20,4 +20,4 @@ WORKDIR /app
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-cp", "/app/app.jar", "-Dloader.path=/app/", "-Dloader.main=hu.unideb.inf.thesis.bonfirecritic.Application", "org.springframework.boot.loader.launch.JarLauncher"]
