@@ -1,18 +1,40 @@
 package hu.unideb.inf.thesis.bonfirecritic.mapper;
 
 import hu.unideb.inf.thesis.bonfirecritic.dto.GameDTO;
+import hu.unideb.inf.thesis.bonfirecritic.model.Actor;
 import hu.unideb.inf.thesis.bonfirecritic.model.Game;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
-@Mapper(componentModel = "spring", uses = {ActorMapper.class, PlatformMapper.class})
-public interface GameMapper {
+import java.util.stream.Collectors;
 
-    @Mapping(source = "actors", target = "actorsDTO")
-    @Mapping(source = "platforms", target = "platformsDTO")
-    GameDTO toDTO(Game game);
+@Component
+@RequiredArgsConstructor
+public class GameMapper {
 
-    @Mapping(source = "actorsDTO", target = "actors")
-    @Mapping(source = "platformsDTO", target = "platforms")
-    Game toEntity(GameDTO gameDTO);
+    private final SpecsMapper specsMapper;
+
+    public GameDTO toDTO(Game game) {
+        return GameDTO.builder()
+                .title(game.getTitle())
+                .developer(game.getDeveloper())
+                .releaseDate(game.getReleaseDate())
+                .platforms(game.getPlatforms())
+                .minSpecs(specsMapper.toDTO(game.getMinSpecs()))
+                .recommendedSpecs(specsMapper.toDTO(game.getRecommendedSpecs()))
+                .actors(game.getActors().stream().map(Actor::getName).collect(Collectors.toSet()))
+                .build();
+    }
+
+    public Game toEntity(GameDTO gameDTO) {
+        return Game.builder()
+                .title(gameDTO.getTitle())
+                .developer(gameDTO.getDeveloper())
+                .releaseDate(gameDTO.getReleaseDate())
+                .platforms(gameDTO.getPlatforms())
+                .minSpecs(specsMapper.toEntity(gameDTO.getMinSpecs()))
+                .recommendedSpecs(specsMapper.toEntity(gameDTO.getRecommendedSpecs()))
+                .actors(gameDTO.getActors().stream().map(actor -> Actor.builder().name(actor).build()).collect(Collectors.toSet()))
+                .build();
+    }
 }

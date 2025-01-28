@@ -1,26 +1,29 @@
 package hu.unideb.inf.thesis.bonfirecritic.dto;
 
-import hu.unideb.inf.thesis.bonfirecritic.model.specs.Specs;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import hu.unideb.inf.thesis.bonfirecritic.model.Platform;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class GameDTO {
-    private Long id;
+    @NotBlank(message = "Title is mandatory")
     private String title;
+
+    @NotBlank(message = "Developer is mandatory")
     private String developer;
+
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate releaseDate;
-    private Set<PlatformDTO> platformsDTO = new HashSet<>();
-    private Specs minSpecs;
-    private Specs recommendedSpecs;
-    private Set<ActorDTO> actorsDTO = new HashSet<>();
+    private Set<Platform> platforms;
+    private SpecsDTO minSpecs;
+    private SpecsDTO recommendedSpecs;
+    private Set<String> actors;
 }

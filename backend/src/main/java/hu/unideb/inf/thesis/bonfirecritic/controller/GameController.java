@@ -1,8 +1,8 @@
 package hu.unideb.inf.thesis.bonfirecritic.controller;
 
 import hu.unideb.inf.thesis.bonfirecritic.dto.GameDTO;
-import hu.unideb.inf.thesis.bonfirecritic.model.Game;
-import hu.unideb.inf.thesis.bonfirecritic.service.GameService;
+import hu.unideb.inf.thesis.bonfirecritic.service.game.GameService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,50 +12,45 @@ import java.util.List;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
-@RequestMapping("/api/games/")
+@RequestMapping("/api/games")
 @RequiredArgsConstructor
 public class GameController {
 
-    // Dependencies
     private final GameService gameService;
 
-    // Get
-    @GetMapping("getGameById/search")
+    @PostMapping("/createGame")
+    public ResponseEntity<GameDTO> createGame(@Valid @RequestBody GameDTO gameDTO) {
+        GameDTO createdGame = gameService.createGame(gameDTO);
+        return new ResponseEntity<>(createdGame, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/getGameById/search")
     public ResponseEntity<GameDTO> getGameById(@RequestParam("id") Long id) {
         GameDTO gameDTO = gameService.getGameById(id);
         return ResponseEntity.ok(gameDTO);
     }
 
-    @GetMapping("getAllGames")
+    @GetMapping("/getAllGames")
     public ResponseEntity<List<GameDTO>> getAllGames() {
-        List<GameDTO> gameDTOList = gameService.getAllGames();
-        return ResponseEntity.ok(gameDTOList);
+        List<GameDTO> games = gameService.getAllGames();
+        return ResponseEntity.ok(games);
     }
 
-    @GetMapping("searchGames/search")
-    public ResponseEntity<List<GameDTO>> searchGames(@RequestParam("word") String keyword) {
-        List<GameDTO> gameDTOList = gameService.searchGames(keyword);
-        return ResponseEntity.ok(gameDTOList.size() > 5 ? gameDTOList.subList(0, 5) : gameDTOList);
+    @PutMapping("/updateGame/search")
+    public ResponseEntity<GameDTO> updateGame(@RequestParam("id") Long id, @Valid @RequestBody GameDTO gameDTO) {
+        GameDTO updatedGame = gameService.updateGame(id, gameDTO);
+        return ResponseEntity.ok(updatedGame);
     }
 
-    // Post
-    @PostMapping("addGame")
-    public ResponseEntity<GameDTO> addGame(@RequestBody Game game) {
-        GameDTO gameDTO = gameService.addGame(game);
-        return new ResponseEntity<>(gameDTO, HttpStatus.CREATED);
-    }
-
-    // Put
-    @PutMapping("updateGame/search")
-    public ResponseEntity<Game> updateGameById(@RequestParam("id") Long id, @RequestBody Game updatedGame) {
-        Game game = gameService.updateGameById(id, updatedGame);
-        return new ResponseEntity<>(game, HttpStatus.ACCEPTED);
-    }
-
-    // Delete
-    @DeleteMapping("deleteGameById/search")
+    @DeleteMapping("/deleteGameById/search")
     public ResponseEntity<String> deleteGameById(@RequestParam("id") Long id) {
         String response = gameService.deleteGameById(id);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/searchGames/search")
+    public ResponseEntity<List<GameDTO>> searchGames(@RequestParam("wd") String keyword) {
+        List<GameDTO> gameDTOList = gameService.searchGames(keyword);
+        return ResponseEntity.ok(gameDTOList.size() > 5 ? gameDTOList.subList(0, 5) : gameDTOList);
     }
 }

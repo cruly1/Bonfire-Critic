@@ -9,13 +9,11 @@ spring:
   h2:
     console:
       enabled: true
-
   jpa:
     hibernate:
       # change this in order to create the db from scratch or update
       ddl-auto: create
 #            ddl-auto: update
-
   servlet:
     multipart:
       enabled: true
