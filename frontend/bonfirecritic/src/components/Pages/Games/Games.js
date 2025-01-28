@@ -1,41 +1,57 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './Games.css';
 
-const gamesData = [
-    { id: 1, title: 'Game 1', rating: 4.5, favorites: 150, releaseDate: '2023-06-15' },
-    { id: 2, title: 'Game 2', rating: 3.8, favorites: 100, releaseDate: '2022-10-10' },
-    { id: 3, title: 'Game 3', rating: 5.0, favorites: 200, releaseDate: '2021-12-01' },
-    { id: 4, title: 'Game 4', rating: 4.0, favorites: 120, releaseDate: '2020-08-22' },
-    { id: 5, title: 'Game 5', rating: 3.2, favorites: 80, releaseDate: '2024-01-10' },
-];
-
 const Games = () => {
+    const [games, setGames] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filterFavorites, setFilterFavorites] = useState(false);
-    const [sortCriteria, setSortCriteria] = useState('rating');
+    const [sortCriteria, setSortCriteria] = useState('releaseDate');
+
     const navigate = useNavigate();
+    const location = useLocation();
+    const searchResults = location.state?.searchResults || null;
+    const searchQuery = new URLSearchParams(location.search).get('search');
 
-    // Filter games by favorites if the checkbox is checked
-    const filteredGames = filterFavorites
-        ? gamesData.filter((game) => game.favorites > 100)
-        : gamesData;
+    useEffect(() => {
+        if (searchResults) {
+            setGames(searchResults);
+            setLoading(false);
+        } else {
+            axios.get('http://localhost:8080/api/games/getAllGames')
+                .then((response) => {
+                    setGames(response.data);
+                    setLoading(false);
+                })
+                .catch((error) => {
+                    console.error('Error fetching games:', error);
+                    setError('Failed to load games');
+                    setLoading(false);
+                });
+        }
+    }, [searchResults]);
 
-    // Sort games based on the selected criteria
+    const filteredGames = filterFavorites ? games.filter((game) => game.favorites > 100) : games;
+
     const sortedGames = [...filteredGames].sort((a, b) => {
-        if (sortCriteria === 'rating') return b.rating - a.rating;
-        if (sortCriteria === 'favorites') return b.favorites - a.favorites;
         if (sortCriteria === 'releaseDate') return new Date(b.releaseDate) - new Date(a.releaseDate);
         return 0;
     });
 
-    const handleGameClick = (gameId) => {
-        navigate(`/games/${gameId}`);
+    const handleGameClick = (gameTitle) => {
+        navigate(`/games/${encodeURIComponent(gameTitle)}`);
     };
+
+    if (loading) return <div className="loading">Loading games...</div>;
+    if (error) return <div className="error">{error}</div>;
 
     return (
         <div className="games-container">
             <header className="games-header">
                 <h1>Game Collection</h1>
+                {searchQuery && <p className="search-result-text">Showing results for: <strong>{searchQuery}</strong></p>}
                 <div className="filters">
                     <label>
                         <input
@@ -43,32 +59,30 @@ const Games = () => {
                             checked={filterFavorites}
                             onChange={() => setFilterFavorites(!filterFavorites)}
                         />
-                        
+                        Show Only Favorites (&lt; 100)
                     </label>
                     <select
                         value={sortCriteria}
                         onChange={(e) => setSortCriteria(e.target.value)}
                         className="sort-dropdown"
                     >
-                        <option value="rating">Sort by Rating</option>
-                        <option value="favorites">Sort by Favorites</option>
                         <option value="releaseDate">Sort by Release Date</option>
                     </select>
                 </div>
             </header>
             <ul className="games-list">
-                {sortedGames.map((game) => (
-                    <li
-                        key={game.id}
-                        className="game-item"
-                        onClick={() => handleGameClick(game.id)}
-                    >
-                        <h2>{game.title}</h2>
-                        <p>Rating: {game.rating}</p>
-                        <p>Favorites: {game.favorites}</p>
-                        <p>Release Date: {game.releaseDate}</p>
-                    </li>
-                ))}
+                {sortedGames.length > 0 ? (
+                    sortedGames.map((game, index) => (
+                        <li key={index} className="game-item" onClick={() => handleGameClick(game.title)}>
+                            <h2>{game.title}</h2>
+                            <p><strong>Developer:</strong> {game.developer}</p>
+                            <p><strong>Release Date:</strong> {game.releaseDate}</p>
+                            <p><strong>Platforms:</strong> {game.platforms.join(', ')}</p>
+                        </li>
+                    ))
+                ) : (
+                    <p className="no-results">No games found for "{searchQuery}"</p>
+                )}
             </ul>
         </div>
     );

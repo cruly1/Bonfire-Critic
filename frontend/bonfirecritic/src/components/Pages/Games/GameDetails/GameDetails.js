@@ -1,32 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import './GameDetails.css';
 
-const gamesData = [
-    { id: 1, title: 'Game 1', description: 'Description of Game 1', rating: 4.5, favorites: 150, releaseDate: '2023-06-15' },
-    { id: 2, title: 'Game 2', description: 'Description of Game 2', rating: 3.8, favorites: 100, releaseDate: '2022-10-10' },
-    { id: 3, title: 'Game 3', description: 'Description of Game 3', rating: 5.0, favorites: 200, releaseDate: '2021-12-01' },
-    { id: 4, title: 'Game 4', description: 'Description of Game 4', rating: 4.0, favorites: 120, releaseDate: '2020-08-22' },
-    { id: 5, title: 'Game 5', description: 'Description of Game 5', rating: 3.2, favorites: 80, releaseDate: '2024-01-10' },
-];
-
 const GameDetails = () => {
-    const { id } = useParams();
-    const game = gamesData.find((game) => game.id === parseInt(id));
+    const { title } = useParams();
+    const [game, setGame] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    if (!game) {
-        return <div className="game-details-container">Game not found.</div>;
-    }
+    useEffect(() => {
+        axios.get('http://localhost:8080/api/games/getAllGames')
+            .then((response) => {
+                const selectedGame = response.data.find((g) => g.title === decodeURIComponent(title));
+                if (selectedGame) {
+                    setGame(selectedGame);
+                } else {
+                    setError('Game not found');
+                }
+                setLoading(false);
+            })
+            .catch((error) => {
+                console.error('Error fetching game details:', error);
+                setError('Failed to load game details');
+                setLoading(false);
+            });
+    }, [title]);
+
+    if (loading) return <div className="loading">Loading game details...</div>;
+    if (error) return <div className="error">{error}</div>;
 
     return (
         <div className="game-details-container">
             <h1 className="game-title">{game.title}</h1>
-            <p className="game-description">{game.description}</p>
-            <div className="game-info">
-                <p><strong>Rating:</strong> {game.rating}</p>
-                <p><strong>Favorites:</strong> {game.favorites}</p>
-                <p><strong>Release Date:</strong> {game.releaseDate}</p>
-            </div>
+            <p><strong>Developer:</strong> {game.developer}</p>
+            <p><strong>Release Date:</strong> {game.releaseDate}</p>
+            <p><strong>Platforms:</strong> {game.platforms.join(', ')}</p>
+
+            <h2>Minimum System Requirements</h2>
+            <p><strong>CPU:</strong> {game.minSpecs.cpu}</p>
+            <p><strong>RAM:</strong> {game.minSpecs.ram}</p>
+            <p><strong>GPU:</strong> {game.minSpecs.gpu}</p>
+            <p><strong>Storage:</strong> {game.minSpecs.storage}</p>
+
+            <h2>Recommended System Requirements</h2>
+            <p><strong>CPU:</strong> {game.recommendedSpecs.cpu}</p>
+            <p><strong>RAM:</strong> {game.recommendedSpecs.ram}</p>
+            <p><strong>GPU:</strong> {game.recommendedSpecs.gpu}</p>
+            <p><strong>Storage:</strong> {game.recommendedSpecs.storage}</p>
+
+            <h2>Main Voice Actors</h2>
+            
+                {game.actors.map((actor, index) => (
+                    <li key={index}>{actor}</li>
+                ))}
+            
         </div>
     );
 };
